@@ -1,0 +1,13 @@
+yarn-error.log
+package-lock.json
+node_modules
+# Editor directories and files
+.DS_Store
+.idea
+.idea/*
+logs/*
+dist
+images/*
+json/*
+md/*
+yarn.lock
