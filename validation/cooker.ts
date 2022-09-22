@@ -26,7 +26,8 @@ export const cookerCheckSchema: (type: 'add' | 'editor') => Schema = (type: 'add
       errorMessage: 'url 参数不能为空'
     },
     pic: {
-      notEmpty: true,
+      // notEmpty: true,
+      isString: true,
       errorMessage: 'pic 参数不能为空'
     },
     wind: {

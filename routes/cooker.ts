@@ -175,9 +175,9 @@ function getMd(list: any[]) {
 
 ${item.pic}
 
-- 排风量：${item.wind}
-- 火力：${item.fire}
-- 风压：${item.pa}
+- 排风量：${item.wind} m³/min
+- 火力：${item.fire} kW
+- 风压：${item.pa} Pa
 
 **推荐理由**：${item.describe[random(max, 0)]}
 
