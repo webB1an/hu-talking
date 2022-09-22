@@ -21,6 +21,8 @@ jobs:
              git pull
              docker-compose stop
              docker-compose rm -f
+             docker stop auto-answer-backend
              docker rm auto-answer-backend
+             docker stop auto-answer-mongo
              docker rm auto-answer-mongo
              docker-compose up -d
