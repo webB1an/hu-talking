@@ -182,8 +182,6 @@ ${item.pic}
 **推荐理由**：${item.describe[random(max, 0)]}
 
 ${item.url}
-
-**推荐理由**：${item.describe}
 `
     })
   }
