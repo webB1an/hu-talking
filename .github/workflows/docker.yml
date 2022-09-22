@@ -19,6 +19,8 @@ jobs:
           script: |
              cd /home/auto-answer-backend/
              git pull
+             docker rm auto-answer-backend
+             docker rm auto-answer-mongo
              docker-compose stop
              docker-compose rm -f
              docker-compose up -d
