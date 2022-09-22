@@ -18,8 +18,7 @@ export const cookerCheckSchema: (type: 'add' | 'editor') => Schema = (type: 'add
       errorMessage: 'name 参数不能为空'
     },
     price: {
-      toInt: true,
-      isInt: true,
+      notEmpty: true,
       errorMessage: 'price 请输入正确的参数类型'
     },
     url: {
@@ -36,8 +35,7 @@ export const cookerCheckSchema: (type: 'add' | 'editor') => Schema = (type: 'add
       errorMessage: 'wind 请输入正确的参数类型'
     },
     fire: {
-      toInt: true,
-      isInt: true,
+      notEmpty: true,
       errorMessage: 'fire 请输入正确的参数类型'
     },
     pa: {
