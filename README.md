@@ -12,3 +12,4 @@ await airConditionerModel.aggregate([
   { $sample: { size: 3 }}
 ])
 ```
+
