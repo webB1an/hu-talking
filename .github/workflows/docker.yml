@@ -19,8 +19,7 @@ jobs:
           script: |
              cd /home/auto-answer-backend/
              git pull
-             docker-compose stop
-             docker-compose rm -f
-             docker stop auto-answer-backend
-             docker rm auto-answer-backend_app
+             docker-compose -p auto-answer-backend stop  
+             docker-compose -p auto-answer-backend rm -f
+             docker rmi auto-answer-backend_app
              docker-compose -p auto-answer-backend up -d 
