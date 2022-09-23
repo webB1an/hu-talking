@@ -1,19 +1,21 @@
 import express from 'express'
 import { checkSchema } from 'express-validator'
 import type { Router, Request, Response } from 'express'
+import type { Obj } from '../interface/common'
 
-import CookerModel from '../models/cooker'
-import { cookerCheckSchema, cookerFindCheckSchema } from '../validation/cooker'
+import AirModel from '../models/air'
+import { airCheckSchema, airFindCheckSchema } from '../validation/air'
 import checkSchemaError from '../middleware/checkSchemaError'
+
 import { filterParams, random } from '../utils'
 
 const router: Router = express.Router()
 
-router.post('/add', checkSchema(cookerCheckSchema('add')), checkSchemaError, async(req: Request, res: Response) => {
-  const { name } = req.body
+router.post('/add', checkSchema(airCheckSchema('add')), checkSchemaError, async(req: Request, res: Response) => {
+  const { type } = req.body
 
-  const cookers = await CookerModel.find({ name })
-  if (cookers.length > 0) {
+  const airs = await AirModel.find({ type })
+  if (airs.length > 0) {
     return res.send({
       code: 90003,
       msg: '输入名称已存在'
@@ -22,8 +24,8 @@ router.post('/add', checkSchema(cookerCheckSchema('add')), checkSchemaError, asy
 
   console.log('---------------add---------------')
 
-  const cooker = new CookerModel(req.body)
-  await cooker.save()
+  const air = new AirModel(req.body)
+  await air.save()
 
   res.json({
     code: 90001,
@@ -41,9 +43,9 @@ router.post('/del', async(req: Request, res: Response) => {
     })
   }
 
-  const cooker = await CookerModel.findOne({ id })
+  const air = await AirModel.findOne({ id })
 
-  if (!cooker) {
+  if (!air) {
     return res.send({
       code: 90001,
       msg: '当前删除的 id 不存在'
@@ -52,7 +54,7 @@ router.post('/del', async(req: Request, res: Response) => {
 
   console.log('---------------delete---------------')
 
-  await CookerModel.deleteOne({ id })
+  await AirModel.deleteOne({ id })
 
   res.json({
     code: 90001,
@@ -60,14 +62,14 @@ router.post('/del', async(req: Request, res: Response) => {
   })
 })
 
-router.post('/editor', checkSchema(cookerCheckSchema('editor')), checkSchemaError, async(req: Request, res: Response) => {
+router.post('/editor', checkSchema(airCheckSchema('editor')), checkSchemaError, async(req: Request, res: Response) => {
   const params = req.body
 
   const { id } = req.body
 
-  const cooker = await CookerModel.findOne({ id })
+  const air = await AirModel.findOne({ id })
 
-  if (!cooker) {
+  if (!air) {
     return res.send({
       code: 90001,
       msg: '当前更新的 id 不存在'
@@ -76,7 +78,7 @@ router.post('/editor', checkSchema(cookerCheckSchema('editor')), checkSchemaErro
 
   console.log('---------------editor---------------')
 
-  await CookerModel.updateOne({ id: params.id }, params)
+  await AirModel.updateOne({ id: params.id }, params)
 
   res.json({
     code: 90001,
@@ -84,21 +86,36 @@ router.post('/editor', checkSchema(cookerCheckSchema('editor')), checkSchemaErro
   })
 })
 
-router.post('/find', checkSchema(cookerFindCheckSchema), checkSchemaError, async(req: Request, res: Response) => {
+router.post('/find', checkSchema(airFindCheckSchema), checkSchemaError, async(req: Request, res: Response) => {
   const { requestData } = filterParams(req.body)
   const { pageSize, page } = filterParams(req.body)
+
   let params = {}
+  let minPrice = 0
+  let maxPrice = 50000
+
+  if (requestData.sort) {
+    params = { ...params, sort: requestData.sort }
+  }
   if (requestData.brand) {
     params = { ...params, brand: { $regex: new RegExp(requestData.brand) }}
   }
-  if (requestData.name) {
-    params = { ...params, name: { $regex: new RegExp(requestData.name) }}
+  if (requestData.type) {
+    params = { ...params, type: { $regex: new RegExp(requestData.type) }}
   }
+  if (requestData.maxPrice) {
+    maxPrice = requestData.maxPrice
+  }
+  if (requestData.minPrice) {
+    minPrice = requestData.minPrice
+  }
+
+  params = { ...params, price: { $gte: minPrice, $lte: maxPrice }}
 
   console.log('---------------find---------------')
 
-  const total = await CookerModel.count(params)
-  const list = await CookerModel.find(params, { _id: 0, __v: 0 }).sort({ createTime: -1 }).skip((page - 1) * pageSize).limit(pageSize)
+  const total = await AirModel.count(params)
+  const list = await AirModel.find(params, { _id: 0, __v: 0 }).sort({ createTime: -1 }).skip((page - 1) * pageSize).limit(pageSize)
 
   res.json({
     code: 90001,
@@ -112,7 +129,7 @@ router.post('/find', checkSchema(cookerFindCheckSchema), checkSchemaError, async
 
 router.post('/detail/:id', async(req: Request, res: Response) => {
   const id = req.params.id
-  const data = await CookerModel.findOne({ id })
+  const data = await AirModel.findOne({ id })
 
   res.json({
     code: 90001,
@@ -122,27 +139,27 @@ router.post('/detail/:id', async(req: Request, res: Response) => {
 })
 
 router.post('/generate', async(req: Request, res: Response) => {
-  const result1 = await getRandomCooker(1)
-  const result2 = await getRandomCooker(2)
-  const result3 = await getRandomCooker(3)
-  const result4 = await getRandomCooker(4)
+  const { power, minPrice = 0, maxPrice = 50000 } = filterParams(req.body)
+  let params = {}
+
+  if (power) {
+    params = { ...params, power }
+  }
+  params = { ...params, price: { $gte: minPrice, $lte: maxPrice }}
+
+  const result1 = await getRandomCooker({ ...params, sort: 1 })
+  const result2 = await getRandomCooker({ ...params, sort: 2 })
 
   const md = `
-# 蒸箱款
+# 挂式空调
 
 ${getMd(result1)}
 
-# 烤箱款
+# 柜式空调
 
 ${getMd(result2)}
 
 # 消毒柜款
-
-${getMd(result3)}
-
-# 蒸烤一体款
-
-${getMd(result4)}
 `
 
   res.json({
@@ -152,9 +169,9 @@ ${getMd(result4)}
   })
 })
 
-async function getRandomCooker(sort: 1 | 2 | 3 | 4) {
-  return await CookerModel.aggregate([
-    { $match: { sort }},
+async function getRandomCooker(parmas: Obj) {
+  return await AirModel.aggregate([
+    { $match: { ...parmas }},
     { $project: { _id: 0, __v: 0, createTime: 0, updateTime: 0 }},
     { $sort: { price: 1 }},
     { $sample: { size: 3 }}
@@ -169,13 +186,11 @@ function getMd(list: any[]) {
 
       console.log(item.describe)
       md += `
-## ${item.brand} ${item.name}
+## ${item.brand} ${item.type}
 
-${item.pic}
-
-- 排风量：${item.wind} m³/min
-- 火力：${item.fire} kW
-- 风压：${item.pa} Pa
+- 最低价：${item.price}
+- 匹数：${item.power} 匹
+- 质保：${item.quality} 年
 
 **推荐理由**：${item.describe[random(max, 0)]}
 
