@@ -3,8 +3,14 @@
 version: "3"
 services:
   app:
-    container_name: auto-answer-backend
+    container_name: auto-answer-backend-hub
     restart: on-failure
+    env_file:
+      - ${MACHINE_ENV}.env
+    environment:
+      - NODE_ENV=${MACHINE_ENV}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
     build: ./
     ports:
       - "3981:3981"
@@ -13,9 +19,15 @@ services:
     depends_on:
       - mongodb
   mongodb:
-    container_name: auto-answer-mongo
+    container_name: auto-answer-mongo-hub
     image: mongo:4.0.8
+    env_file:
+      - ${MACHINE_ENV}.env
+    environment:
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
     volumes: 
-      - ~/mongo/db:/data/db
+      - ~/data:/data/db
+      - ./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
     ports:
       - "27017:27017"

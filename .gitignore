@@ -11,3 +11,4 @@ images/*
 json/*
 md/*
 yarn.lock
+data/*

@@ -1,10 +1,26 @@
 import mongoose from 'mongoose'
 
-mongoose.connect(process.env.MONGODB_URL as string, {
-  // useNewUrlParser: true,
-  // useCreateIndex: true,
-  // useUnifiedTopology: true,
-  authSource: 'admin'
+const {
+  MONGO_USERNAME = 'admin',
+  MONGO_PASSWORD = 'test123456',
+  MONGO_HOST = 'localhost',
+  MONGO_PORT = '27017',
+  MONGO_INITDB_DATABASE = 'auto-answer'
+} = process.env
+
+let uri = ''
+
+if (process.env.NODE_ENV === 'dev' || !process.env.NODE_ENV) {
+  uri = `mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_INITDB_DATABASE}`
+} else {
+  uri = `mongodb://${MONGO_USERNAME}:${encodeURIComponent(MONGO_PASSWORD)}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_INITDB_DATABASE}`
+}
+
+console.log(uri)
+
+// mongodb://admin:test123456@localhost:27017/auto-answer
+mongoose.connect(uri, {
+  // authSource: 'admin'
 }, () => {
   console.log('connect!')
 })
