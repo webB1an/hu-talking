@@ -33,7 +33,11 @@ router.post('/chat', async(req: Request, res: Response) => {
 
   console.log(typeof response)
 
-  res.send(response)
+  res.json({
+    code: 90001,
+    msg: '发送成功！',
+    response: response?.data
+  })
 })
 
 export default router

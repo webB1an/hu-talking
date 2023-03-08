@@ -22,3 +22,5 @@ await airConditionerModel.aggregate([
 ```bash
 sh build.sh prod root123456 admin123456
 ```
+
+pm2 start pm2.conf.json
