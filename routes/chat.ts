@@ -14,7 +14,7 @@ router.post('/chat', async(req: Request, res: Response) => {
   })
 
   const openai = new OpenAIApi(configuration)
-  console.log('openai', openai)
+  // console.log('openai', openai)
   let response
   try {
     response = await openai.createChatCompletion({
