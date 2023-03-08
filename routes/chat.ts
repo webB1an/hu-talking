@@ -1,5 +1,5 @@
 import express from 'express'
-import { Configuration, OpenAIApi } from 'openai'
+import { Configuration, OpenAIApi, type CreateChatCompletionResponse } from 'openai'
 import type { Router, Request, Response } from 'express'
 
 const router: Router = express.Router()
@@ -25,7 +25,9 @@ router.post('/chat', async(req: Request, res: Response) => {
     console.log('---------------error---------------', error)
   }
 
-  console.log('response', response)
+  if (response?.data) {
+    console.log('response', response.data.choices)
+  }
 
   res.json({
     code: 90001,
