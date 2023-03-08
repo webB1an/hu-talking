@@ -19,7 +19,9 @@ router.post('/chat', async(req: Request, res: Response) => {
   try {
     response = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
-      messages: [{ 'role': 'user', 'content': 'Hello!' }]
+      temperature: 0.9,
+      stream: true,
+      messages: [{ 'role': 'user', 'content': '介绍下你自己!' }]
     })
   } catch (error) {
     console.log('---------------error---------------', error)
