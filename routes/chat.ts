@@ -28,7 +28,7 @@ router.post('/chat', async(req: Request, res: Response) => {
   }
 
   if (response?.data) {
-    console.log('response', response.data)
+    console.log('response', response)
   }
 
   console.log(typeof response)
@@ -36,7 +36,7 @@ router.post('/chat', async(req: Request, res: Response) => {
   res.json({
     code: 90001,
     msg: '发送成功！',
-    response: response?.data
+    response: response
   })
 })
 
