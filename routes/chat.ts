@@ -29,10 +29,12 @@ router.post('/chat', async(req: Request, res: Response) => {
     console.log('response', response.data.choices)
   }
 
+  console.log(typeof response)
+
   res.json({
     code: 90001,
     msg: '发送成功！',
-    response
+    response: response?.data.choices
   })
 })
 
