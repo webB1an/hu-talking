@@ -15,11 +15,15 @@ router.post('/chat', async(req: Request, res: Response) => {
 
   const openai = new OpenAIApi(configuration)
   console.log('openai', openai)
-
-  const response = await openai.createChatCompletion({
-    model: 'gpt-3.5-turbo',
-    messages: [{ 'role': 'user', 'content': 'Hello!' }]
-  })
+  let response
+  try {
+    response = await openai.createChatCompletion({
+      model: 'gpt-3.5-turbo',
+      messages: [{ 'role': 'user', 'content': 'Hello!' }]
+    })
+  } catch (error) {
+    console.log('---------------error---------------', error)
+  }
 
   console.log('response', response)
 
