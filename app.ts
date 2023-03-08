@@ -6,15 +6,9 @@ import router from './routes'
 import type { Express } from 'express'
 import type { Server } from 'http'
 
+dotenv.config({ path: './dev.env' })
 
-if (process.env.NODE_ENV === 'dev' || !process.env.NODE_ENV) {
-  dotenv.config({ path: './dev.env' })
-} else {
-  dotenv.config({ path: './prod.env' })
-}
-
-
-import './db'
+// import './db'
 
 console.log('====================================================================')
 console.log('PORT', process.env.PORT)
