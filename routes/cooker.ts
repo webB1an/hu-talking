@@ -127,28 +127,40 @@ router.post('/generate', async(req: Request, res: Response) => {
   const result3 = await getRandomCooker(3)
   const result4 = await getRandomCooker(4)
 
+//   const md = `
+// # 蒸箱款
+
+// ${getMd(result1)}
+
+// # 烤箱款
+
+// ${getMd(result2)}
+
+// # 消毒柜款
+
+// ${getMd(result3)}
+
+// # 蒸烤一体款
+
+// ${getMd(result4)}
+// `
+
   const md = `
-# 蒸箱款
-
 ${getMd(result1)}
-
-# 烤箱款
 
 ${getMd(result2)}
 
-# 消毒柜款
-
 ${getMd(result3)}
-
-# 蒸烤一体款
 
 ${getMd(result4)}
 `
-
   res.json({
     code: 90001,
     msg: '生成成功！',
-    data: md
+    data: {
+      md,
+      list: [...result1, ...result2, ...result3, ...result4]
+    }
   })
 })
 
@@ -157,7 +169,7 @@ async function getRandomCooker(sort: 1 | 2 | 3 | 4) {
     { $match: { sort }},
     { $project: { _id: 0, __v: 0, createTime: 0, updateTime: 0 }},
     { $sort: { price: 1 }},
-    { $sample: { size: 3 }}
+    { $sample: { size: 1 }}
   ])
 }
 
@@ -170,8 +182,6 @@ function getMd(list: any[]) {
       console.log(item.describe)
       md += `
 ## ${item.brand} ${item.name}
-
-${item.pic}
 
 - 排风量：${item.wind} m³/min
 - 火力：${item.fire} kW

@@ -13,3 +13,12 @@ await airConditionerModel.aggregate([
 ])
 ```
 
+<!-- https://www.youtube.com/watch?v=p868I9I7UVM&list=PLcCp4mjO-z9_HmJ5rSonmiEGfP-kyRMlI&index=3 -->
+
+# 通过 sh build.sh 传参数
+
+通过 shell 脚本，截取 prod、数据库密码导入到容器
+
+```bash
+sh build.sh prod root123456 admin123456
+```
