@@ -5,10 +5,6 @@ import type { Router, Request, Response } from 'express'
 const router: Router = express.Router()
 
 router.post('/chat', async(req: Request, res: Response) => {
-  res.setHeader('Content-Type', 'text/event-stream')
-  res.setHeader('Cache-Control', 'no-cache')
-  res.setHeader('Connection', 'keep-alive')
-
   const { apiKey, messages } = req.body
 
   console.log('apiKey', apiKey)
@@ -20,29 +16,25 @@ router.post('/chat', async(req: Request, res: Response) => {
 
   const openai = new OpenAIApi(configuration)
 
-  res.write(openai.createChatCompletion({
-    model: 'gpt-3.5-turbo',
-    temperature: 0.9,
-    stream: true,
-    messages
-  }))
-  // let response
-  // try {
-  //   response = await openai.createChatCompletion({
-  //     model: 'gpt-3.5-turbo',
-  //     temperature: 0.9,
-  //     stream: true,
-  //     messages
-  //   })
-  // } catch (error) {
-  //   console.log('---------------error---------------', error)
-  // }
+  let response
+  try {
+    response = await openai.createChatCompletion({
+      model: 'gpt-3.5-turbo',
+      temperature: 0.9,
+      stream: true,
+      messages
+    })
+  } catch (error) {
+    console.log('---------------error---------------', error)
+  }
 
-  // res.json({
-  //   code: 90001,
-  //   msg: '发送成功！',
-  //   response: response?.data
-  // })
+  console.log('---------------response---------------', (response?.data as unknown as string).split('data: '))
+
+  res.json({
+    code: 90001,
+    msg: '发送成功！',
+    response: response?.data
+  })
 })
 
 export default router
