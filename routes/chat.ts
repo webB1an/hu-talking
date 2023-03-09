@@ -14,24 +14,35 @@ router.post('/chat', async(req: Request, res: Response) => {
     apiKey
   })
 
-  const openai = new OpenAIApi(configuration)
-  let response
-  try {
-    response = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
-      temperature: 0.9,
-      stream: true,
-      messages
-    })
-  } catch (error) {
-    console.log('---------------error---------------', error)
+  const evtSource = openai.createChatCompletion({
+    model: 'gpt-3.5-turbo',
+    temperature: 0.9,
+    stream: true,
+    messages
+  })
+
+  evtSource.onmessage = function(event) {
+    console.log('onmessage', event.data)
   }
 
-  res.json({
-    code: 90001,
-    msg: '发送成功！',
-    response: response?.data
-  })
+  // const openai = new OpenAIApi(configuration)
+  // let response
+  // try {
+  //   response = await openai.createChatCompletion({
+  //     model: 'gpt-3.5-turbo',
+  //     temperature: 0.9,
+  //     stream: true,
+  //     messages
+  //   })
+  // } catch (error) {
+  //   console.log('---------------error---------------', error)
+  // }
+
+  // res.json({
+  //   code: 90001,
+  //   msg: '发送成功！',
+  //   response: response?.data
+  // })
 })
 
 export default router
