@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "hu-talking-backend",
   "version": "1.0.0",
   "description": "",
   "main": "app.ts",
@@ -7,6 +7,9 @@
     "dev": "nodemon app.ts",
     "build": "tsc",
     "start": "node ./dist/app.js",
+    "pm2:start": "npm run build && pm2 startOrRestart pm2.conf.json",
+    "pm2:stop": "pm2 stop hu-talking-backend",
+    "pm2:delete": "pm2 delete hu-talking-backend",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
